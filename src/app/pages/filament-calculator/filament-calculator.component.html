@@ -1,0 +1,253 @@
+<div class="min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <header class="text-center mb-12">
+      <h1
+        class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100"
+      >
+        Calculadora de
+        <span class="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-500"
+          >Filamento</span
+        >
+      </h1>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
+        Estima el costo de tus impresiones FDM con precisión.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
+      <!-- Inputs Column -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Print Parameters -->
+        <div
+          class="bg-white/50 dark:bg-[#111827]/50 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg p-6"
+        >
+          <h2
+            class="text-xl font-bold text-gray-900 dark:text-gray-100 border-b border-gray-300 dark:border-gray-700 pb-3 mb-6"
+          >
+            Parámetros de Impresión
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div>
+              <label
+                for="material"
+                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                >Material</label
+              >
+              <select
+                id="material"
+                class="block w-full bg-gray-100 dark:bg-[#0b0e14] border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
+                [value]="selectedMaterial()"
+                (change)="onMaterialChange($event)"
+              >
+                @for(material of materials; track material.name) {
+                <option [value]="material.name">
+                  {{ material.name }} (S/ {{ material.pricePerGram | number : '1.3-3' }}/g)
+                </option>
+                }
+              </select>
+            </div>
+            <div>
+              <label
+                for="grams"
+                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                >Gramos de Filamento</label
+              >
+              <input
+                id="grams"
+                type="number"
+                class="block w-full bg-gray-100 dark:bg-[#0b0e14] border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
+                [value]="grams()"
+                (input)="grams.set(+$any($event.target).value)"
+              />
+            </div>
+            <div>
+              <label
+                for="hours"
+                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                >Horas de Impresión</label
+              >
+              <input
+                id="hours"
+                type="number"
+                class="block w-full bg-gray-100 dark:bg-[#0b0e14] border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
+                [value]="hours()"
+                (input)="hours.set(+$any($event.target).value)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- General Costs & Margins -->
+        <div
+          class="bg-white/50 dark:bg-[#111827]/50 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg p-6"
+        >
+          <h2
+            class="text-xl font-bold text-gray-900 dark:text-gray-100 border-b border-gray-300 dark:border-gray-700 pb-3 mb-6"
+          >
+            Costos Generales y Márgenes
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+            <div>
+              <label
+                for="priceKwh"
+                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                >Precio kWh (S/)</label
+              >
+              <input
+                id="priceKwh"
+                type="number"
+                class="block w-full bg-gray-100 dark:bg-[#0b0e14] border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 text-gray-800 dark:text-gray-200"
+                [value]="priceKwh()"
+                (input)="priceKwh.set(+$any($event.target).value)"
+              />
+            </div>
+            <div>
+              <label
+                for="consumption"
+                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                >Consumo (Watts)</label
+              >
+              <input
+                id="consumption"
+                type="number"
+                class="block w-full bg-gray-100 dark:bg-[#0b0e14] border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 text-gray-800 dark:text-gray-200"
+                [value]="consumptionWatts()"
+                (input)="consumptionWatts.set(+$any($event.target).value)"
+              />
+            </div>
+            <div>
+              <label
+                for="lifeHours"
+                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                >Vida Útil (horas)</label
+              >
+              <input
+                id="lifeHours"
+                type="number"
+                class="block w-full bg-gray-100 dark:bg-[#0b0e14] border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 text-gray-800 dark:text-gray-200"
+                [value]="lifeHours()"
+                (input)="lifeHours.set(+$any($event.target).value)"
+              />
+            </div>
+            <div>
+              <label
+                for="replacements"
+                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                >Repuestos (S/)</label
+              >
+              <input
+                id="replacements"
+                type="number"
+                class="block w-full bg-gray-100 dark:bg-[#0b0e14] border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 text-gray-800 dark:text-gray-200"
+                [value]="replacements()"
+                (input)="replacements.set(+$any($event.target).value)"
+              />
+            </div>
+            <div>
+              <label
+                for="errorPercent"
+                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                >Margen Error (%)</label
+              >
+              <input
+                id="errorPercent"
+                type="number"
+                class="block w-full bg-gray-100 dark:bg-[#0b0e14] border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 text-gray-800 dark:text-gray-200"
+                [value]="errorPercent()"
+                (input)="errorPercent.set(+$any($event.target).value)"
+              />
+            </div>
+            <div>
+              <label
+                for="profitMultiplier"
+                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                >Ganancia (x)</label
+              >
+              <input
+                id="profitMultiplier"
+                type="number"
+                class="block w-full bg-gray-100 dark:bg-[#0b0e14] border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 text-gray-800 dark:text-gray-200"
+                [value]="profitMultiplier()"
+                (input)="profitMultiplier.set(+$any($event.target).value)"
+              />
+            </div>
+          </div>
+          <div class="mt-8">
+            <button
+              (click)="calculate()"
+              class="w-full inline-flex justify-center items-center px-8 py-3 font-semibold rounded-lg shadow-lg text-white bg-linear-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-[#111827] transition-all transform hover:scale-105"
+            >
+              Calcular Costo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Column -->
+      <div class="lg:sticky lg:top-24 h-fit mt-8 lg:mt-0">
+        <div
+          class="bg-white/50 dark:bg-[#111827]/50 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg p-6"
+        >
+          <h2
+            class="text-xl font-bold text-gray-900 dark:text-gray-100 border-b border-gray-300 dark:border-gray-700 pb-3 mb-4"
+          >
+            Resultados de Cotización
+          </h2>
+          @if (results(); as res) {
+          <div class="space-y-3 text-gray-700 dark:text-gray-300">
+            <div class="flex justify-between items-center">
+              <span>Costo Material:</span>
+              <span class="font-semibold text-gray-900 dark:text-gray-100"
+                >{{ res.materialCost | number : '1.2-2' }} S/</span
+              >
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Costo Energía:</span>
+              <span class="font-semibold text-gray-900 dark:text-gray-100"
+                >{{ res.energyCost | number : '1.2-2' }} S/</span
+              >
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Desgaste Máquina:</span>
+              <span class="font-semibold text-gray-900 dark:text-gray-100"
+                >{{ res.machineWearCost | number : '1.2-2' }} S/</span
+              >
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Margen de Error:</span>
+              <span class="font-semibold text-gray-900 dark:text-gray-100"
+                >{{ res.errorMargin | number : '1.2-2' }} S/</span
+              >
+            </div>
+          </div>
+
+          <hr class="border-gray-300 dark:border-gray-700 my-4" />
+
+          <div class="space-y-4">
+            <div class="p-4 bg-gray-100 dark:bg-[#0b0e14] rounded-lg text-center shadow-inner">
+              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">COSTO TOTAL</h3>
+              <p class="text-3xl font-bold text-cyan-500 dark:text-cyan-400">
+                {{ res.totalCost | number : '1.2-2' }} S/
+              </p>
+            </div>
+            <div class="p-4 bg-gray-100 dark:bg-[#0b0e14] rounded-lg text-center shadow-inner">
+              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                PRECIO FINAL SUGERIDO
+              </h3>
+              <p class="text-3xl font-bold text-blue-500 dark:text-blue-400">
+                {{ res.finalPrice | number : '1.2-2' }} S/
+              </p>
+            </div>
+          </div>
+          } @else {
+          <div class="text-center py-10">
+            <p class="text-gray-500 dark:text-gray-400">
+              Ingresa los datos y haz clic en "Calcular Costo" para ver los resultados.
+            </p>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

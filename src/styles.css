@@ -1,1 +1,97 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
+
+/* Estilos base para ambos modos */
+:root {
+  color-scheme: light;
+  /* Colores personalizados cálidos */
+  --warm-50: 254 252 246;
+  --warm-100: 253 248 239;
+  --stone-200: 231 229 228;
+  --stone-600: 87 83 78;
+  --stone-700: 68 64 60;
+  --stone-800: 41 37 36;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Layout de altura completa */
+html,
+body {
+  height: 100%;
+}
+
+/* Esquema de colores cálido y moderno para modo claro */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: rgb(var(--warm-50)); /* warm-50 - fondo crema muy suave */
+  color: rgb(var(--stone-800)); /* stone-800 - texto oscuro cálido */
+  display: flex;
+  flex-direction: column;
+}
+
+html.dark body {
+  background-color: rgb(15 23 42); /* slate-900 */
+  color: rgb(248 250 252); /* slate-50 */
+}
+
+/* Mejoras para modo claro con tonos cálidos */
+html:not(.dark) {
+  /* Fondos blancos con toque cálido */
+  .bg-white,
+  .bg-amber-50 {
+    background-color: rgb(255 251 235) !important; /* amber-50 - blanco cálido */
+    box-shadow: 0 1px 3px 0 rgb(120 113 108 / 0.1), 0 1px 2px -1px rgb(120 113 108 / 0.1);
+  }
+
+  /* Mejorar bordes con tonos cálidos */
+  .border-gray-200,
+  .border-gray-300,
+  .border-stone-200,
+  .border-stone-300 {
+    border-color: rgb(var(--stone-200)) !important; /* stone-200 */
+  }
+
+  /* Textos con tonos cálidos */
+  .text-gray-900,
+  .text-stone-800 {
+    color: rgb(var(--stone-800)) !important; /* stone-800 */
+  }
+
+  .text-gray-700,
+  .text-stone-700 {
+    color: rgb(var(--stone-700)) !important; /* stone-700 */
+  }
+
+  .text-gray-600,
+  .text-stone-600 {
+    color: rgb(var(--stone-600)) !important; /* stone-600 */
+  }
+
+  /* Header con fondo cálido */
+  header {
+    background-color: rgba(255, 251, 235, 0.95) !important; /* amber-50 con transparencia */
+    border-color: rgb(var(--stone-200)) !important; /* stone-200 */
+  }
+
+  /* Footer con fondo cálido */
+  footer {
+    background-color: rgb(250 245 255) !important; /* purple-50 - toque sutil */
+    border-color: rgb(var(--stone-200)) !important; /* stone-200 */
+  }
+
+  /* Fondo de sección hero */
+  .bg-warm-50 {
+    background-color: rgb(var(--warm-50)) !important;
+  }
+}
+
+/* Estilos para modo oscuro */
+html.dark .bg-white {
+  background-color: rgb(15 23 42) !important; /* slate-900 */
+}
+
+html.dark .text-slate-900 {
+  color: rgb(248 250 252) !important; /* slate-50 */
+}
